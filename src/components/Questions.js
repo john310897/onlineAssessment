@@ -5,7 +5,7 @@ import { storeValue } from '../app_state/QuestionReducer';
 import { useNavigate } from 'react-router-dom';
 const Questions = () => {
     const dispatch = useDispatch();
-    const state = useSelector((state) => state.question)
+    const state = useSelector((c) => c.question)
     const [activeQuestion, setActiveQuestion] = useState({});
     const [countData, setCountData] = useState({ count: 0 })
     const navigate = useNavigate();
@@ -22,9 +22,10 @@ const Questions = () => {
 
     const gotoNextQuestion = (item, index) => {
         let cd = countData.count + 1
+        let updated = { ...state.questionData, ...{ [item.name]: index + 1 } }
+        dispatch(storeValue(updated))
         if (cd < questionData.questions.length) {
             countData.count = cd
-            dispatch(storeValue({ question: item?.question_label, answer: index + 1 }))
             setCountData({ ...countData, count: cd })
             setQuestion()
         } else {
@@ -58,7 +59,7 @@ const Questions = () => {
                                 (<>
                                     <img src={option} alt='loading' className='option_image' width='auto' height='100px' onClick={() => gotoNextQuestion(activeQuestion, index)} /> &nbsp;&nbsp;
                                 </>)
-                                : (<label className='option_option' onClick={() => gotoNextQuestion(activeQuestion, index)}> <b>{option}</b></label>)}
+                                : (<label className='option_option' onClick={() => gotoNextQuestion(activeQuestion, option)}> <b>{option}</b></label>)}
                         </section>
                     ))}
                 </div>
